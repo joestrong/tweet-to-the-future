@@ -67,9 +67,9 @@
                     }).then(function successCallback(response) {
                         $scope.result = true;
                         var words = response.data;
-                        var words = words.reduce(function(src, item) {
+/*                        var words = words.reduce(function(src, item) {
                             return {word: src['word'] + ' ' + item['word']};
-                        })['word'];
+                        })['word'];*/
                         $scope.futureTweet = words;
                     }, function errorCallback(response) {
                         console.log('error');
