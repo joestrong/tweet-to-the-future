@@ -25,7 +25,7 @@ $app->get('/get-tweet/{username}', function($username) use($app, $credentials) {
     $auth = new ApplicationOnlyAuth($credentials, new ArraySerializer());
     $params = array(
         'screen_name' => $username,
-        'count' => 15,
+        'count' => 50,
         'exclude_replies' => true
     );
     $tweets = $auth->get('statuses/user_timeline', $params);
