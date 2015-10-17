@@ -43,7 +43,7 @@ function makeTweet($tweets) {
 
 function getCommonWords($tweets) {
     $words = getWordCounts($tweets);
-    $words = array_splice($words, 0, 10);
+    $words = removeStupidWords($words);
     return $words;
 }
 
@@ -86,17 +86,36 @@ function getRandomHashtag() {
 
 function createSentence($commonWords) {
     $sentences = [
-        sprintf("I really enjoy %s, and like to %s every day", $commonWords[0], $commonWords[1]),
-        sprintf("%s and %s. End of.", $commonWords[0], $commonWords[1]),
-        sprintf("Remember %s? Retro. #%s", $commonWords[0], $commonWords[1]),
-        sprintf("%s and %s are great", $commonWords[0], $commonWords[1]),
-        sprintf("#%s #%s #%s #%s #%s", $commonWords[0], $commonWords[1], $commonWords[2], $commonWords[3], $commonWords[4] ),
-        sprintf("What happened to Bill Gates? %s? %s? #whoknows", $commonWords[0], $commonWords[1]),
-        sprintf("Sandwiches, filled with %s and %s", $commonWords[0], $commonWords[1]),
-        sprintf("Who is Mr %s? A %s? #lol", $commonWords[0], $commonWords[1]),
-        sprintf("I just %s and %s #yolo", $commonWords[0], $commonWords[1]),
+        sprintf("I really enjoy %s, and like to %s every day", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("%s and %s. End of.", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("Remember %s? Retro. #%s", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("%s and %s are great", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("#%s #%s #%s #%s #%s", array_pop($commonWords), array_pop($commonWords), array_pop($commonWords), array_pop($commonWords), array_pop($commonWords)),
+        sprintf("What happened to Bill Gates? %s? %s? #whoknows", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("Sandwiches, filled with %s and %s", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("Who is Mr %s? A %s? #lol", array_pop($commonWords), array_pop($commonWords)),
+        sprintf("I just %s and %s #yolo", array_pop($commonWords), array_pop($commonWords)),
     ];
     return $sentences[rand(0, count($sentences) - 1)];
+}
+
+function removeStupidWords($words) {
+    $words = array_filter($words, function($word) {
+        $badwords = [
+            'the',
+            'a',
+            'and',
+            'RT',
+            'to',
+            '?',
+            'of',
+        ];
+        if(in_array($word, $badwords)) {
+            return false;
+        }
+        return true;
+    });
+    return $words;
 }
 
 $app->run();
