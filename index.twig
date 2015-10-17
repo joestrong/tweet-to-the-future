@@ -9,6 +9,14 @@
             color: #fff;
             text-align: center;
         }
+        .futureTweet {
+            background: #fff;
+            border-radius: 5px;
+            color: #000;
+            padding: 10px;
+            margin: 0 auto;
+            max-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -32,7 +40,7 @@
             })
 
             .controller('mainController', ['$scope', '$http', function($scope, $http) {
-                $scope.username = 'strongjoe';
+                $scope.username = '';
                 $scope.pressenter = function(event) {
                     if (event.keyCode == 13) {
                         $scope.submit();
