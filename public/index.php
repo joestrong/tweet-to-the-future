@@ -36,8 +36,9 @@ $app->get('/get-tweet/{username}', function($username) use($app, $credentials) {
 
 function makeTweet($tweets) {
     $commonWords = getCommonWords($tweets);
-    $commonWords = array_merge($commonWords, getRandomHashTag());
-    return json_encode($commonWords);
+    $sentence = createSentence($commonWords);
+    $sentence = $sentence . " " . getRandomHashtag();
+    return json_encode($sentence);
 }
 
 function getCommonWords($tweets) {
@@ -66,6 +67,9 @@ function getWordCounts($tweets) {
     usort($commonWords, function($a, $b) {
         return $b['count'] <=> $a['count'];
     });
+    $commonWords = array_map(function($word) {
+        return $word['word'];
+    }, $commonWords);
     return $commonWords;
 }
 
@@ -77,11 +81,22 @@ function getRandomHashtag() {
         '#spaceFood',
         '#myRobotAttackedMe',
     ];
-    return [
-        10 => [
-            'word' => $hashtags[rand(0, count($hashtags))]
-        ],
+    return $hashtags[rand(0, count($hashtags))];
+}
+
+function createSentence($commonWords) {
+    $sentences = [
+        sprintf("I really enjoy %s, and like to %s every day", $commonWords[0], $commonWords[1]),
+        sprintf("%s and %s. End of.", $commonWords[0], $commonWords[1]),
+        sprintf("Remember %s? Retro. #%s", $commonWords[0], $commonWords[1]),
+        sprintf("%s and %s are great", $commonWords[0], $commonWords[1]),
+        sprintf("#%s #%s #%s #%s #%s", $commonWords[0], $commonWords[1], $commonWords[2], $commonWords[3], $commonWords[4] ),
+        sprintf("What happened to Bill Gates? %s? %s? #whoknows", $commonWords[0], $commonWords[1]),
+        sprintf("Sandwiches, filled with %s and %s", $commonWords[0], $commonWords[1]),
+        sprintf("Who is Mr %s? A %s? #lol", $commonWords[0], $commonWords[1]),
+        sprintf("I just %s and %s #yolo", $commonWords[0], $commonWords[1]),
     ];
+    return $sentences[rand(0, count($sentences) - 1)];
 }
 
 $app->run();
