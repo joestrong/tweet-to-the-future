@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" ng-app="tttf">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #00214D;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" ng-controller="mainController">
+        <img src="/logo.png" />
+
+        <h1>Enter your twitter username</h1>
+        <input type="text" ng-model="username" ng-keyup="pressenter($event)" />
+        <button ng-click="submit()">Go</button>
+
+        <h1>Your tweet from 2025:</h1>
+        <div class="futureTweet">{[{ futureTweet }]}</div>
+    </div>
+    <script src="/node_modules/angular/angular.min.js"></script>
+    <script>
+
+        angular.module('tttf', [])
+
+            .config(function($interpolateProvider){
+                $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+            })
+
+            .controller('mainController', ['$scope', '$http', function($scope, $http) {
+                $scope.username = 'strongjoe';
+                $scope.pressenter = function(event) {
+                    if (event.keyCode == 13) {
+                        $scope.submit();
+                    }
+                };
+                $scope.submit = function() {
+                    $scope.futureTweet = '..';
+                    $http({
+                        method: 'GET',
+                        url: '/get-tweet/' + $scope.username
+                    }).then(function successCallback(response) {
+                        var words = response.data;
+                        var words = words.reduce(function(src, item) {
+                            return {word: src['word'] + ' ' + item['word']};
+                        })['word'];
+                        $scope.futureTweet = words;
+                    }, function errorCallback(response) {
+                        console.log('error');
+                        console.log(response);
+                    });
+                };
+            }]);
+
+    </script>
+</body>
+</html>

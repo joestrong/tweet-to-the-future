@@ -1,0 +1,21 @@
+{
+  "name": "tweet-to-the-future",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joestrong/tweet-to-the-future.git"
+  },
+  "author": "Joe Strong <joestrong@gmail.com> (https://www.joestrong.co.uk/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joestrong/tweet-to-the-future/issues"
+  },
+  "dependencies": {
+    "angular": "^1.4.7"
+  }
+}
