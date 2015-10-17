@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" ng-app="tttf">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #00214D;
+            color: #fff;
+            text-align: center;
+        }
+        .futureTweet {
+            background: #fff;
+            border-radius: 5px;
+            color: #000;
+            padding: 10px;
+            margin: 0 auto;
+            max-width: 300px;
+        }
+        .restart {
+            background: #fff;
+            color: #000;
+            max-width: 100px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px auto 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" ng-controller="mainController">
+        <img src="/logo.png" />
+
+        <div ng-hide="result">
+            <h1>Enter your twitter username</h1>
+            <input type="text" ng-model="username" ng-keyup="pressenter($event)" />
+            <button ng-click="submit()">Go</button>
+        </div>
+
+        <div ng-show="result">
+            <h1>Your tweet from 2025:</h1>
+            <div class="futureTweet">{[{ futureTweet }]}</div>
+            <div ng-click="reset()" class="restart">Restart</div>
+        </div>
+    </div>
+    <script src="/node_modules/angular/angular.min.js"></script>
+    <script>
+
+        angular.module('tttf', [])
+
+            .config(function($interpolateProvider){
+                $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+            })
+
+            .controller('mainController', ['$scope', '$http', function($scope, $http) {
+                $scope.username = '';
+                $scope.pressenter = function(event) {
+                    if (event.keyCode == 13) {
+                        $scope.submit();
+                    }
+                };
+                $scope.submit = function() {
+                    $scope.futureTweet = '..';
+                    $http({
+                        method: 'GET',
+                        url: '/get-tweet/' + $scope.username
+                    }).then(function successCallback(response) {
+                        $scope.result = true;
+                        var words = response.data;
+/*                        var words = words.reduce(function(src, item) {
+                            return {word: src['word'] + ' ' + item['word']};
+                        })['word'];*/
+                        $scope.futureTweet = words;
+                    }, function errorCallback(response) {
+                        console.log('error');
+                        console.log(response);
+                    });
+                };
+                $scope.reset = function() {
+                    $scope.username = '';
+                    $scope.futureTweet = '';
+                    $scope.result = false;
+                }
+            }]);
+
+    </script>
+</body>
+</html>
