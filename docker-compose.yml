@@ -1,0 +1,14 @@
+tttf:
+  container_name: tttf
+  build: ./docker/tttf
+  ports:
+   - "8083:80"
+  volumes:
+   - ../:/web
+  links:
+   - php
+php:
+  container_name: php7fpm
+  image: php:7-fpm
+  volumes:
+   - ../:/web
