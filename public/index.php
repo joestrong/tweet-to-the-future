@@ -25,7 +25,7 @@ $app->get('/get-tweet/{username}', function($username) use($app, $credentials) {
     $auth = new ApplicationOnlyAuth($credentials, new ArraySerializer());
     $params = array(
         'screen_name' => $username,
-        'count' => 5,
+        'count' => 15,
         'exclude_replies' => true
     );
     $tweets = $auth->get('statuses/user_timeline', $params);
@@ -36,12 +36,13 @@ $app->get('/get-tweet/{username}', function($username) use($app, $credentials) {
 
 function makeTweet($tweets) {
     $commonWords = getCommonWords($tweets);
+    $commonWords = array_merge($commonWords, getRandomHashTag());
     return json_encode($commonWords);
 }
 
 function getCommonWords($tweets) {
     $words = getWordCounts($tweets);
-    $words = array_splice($words, 0, 5);
+    $words = array_splice($words, 0, 10);
     return $words;
 }
 
@@ -66,6 +67,21 @@ function getWordCounts($tweets) {
         return $b['count'] <=> $a['count'];
     });
     return $commonWords;
+}
+
+function getRandomHashtag() {
+    $hashtags = [
+        '#cyborgBillGates',
+        '#marsApartments',
+        '#invisibleninjas',
+        '#spaceFood',
+        '#myRobotAttackedMe',
+    ];
+    return [
+        10 => [
+            'word' => $hashtags[rand(0, count($hashtags))]
+        ],
+    ];
 }
 
 $app->run();
