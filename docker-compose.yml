@@ -8,7 +8,7 @@ tttf:
   links:
    - php
 php:
-  container_name: php7fpm
+  container_name: tttf-php7fpm
   image: php:7-fpm
   volumes:
    - ../:/web
