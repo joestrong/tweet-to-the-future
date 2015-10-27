@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
+        html {
+            min-height: 100%;
+        }
         body {
-            background-color: #00214D;
             color: #fff;
             text-align: center;
+            background: #c431c4;
+            background: radial-gradient(ellipse at center, #c431c4 0%, #000000 100%);
+            font-family: arial, sans-serif;
         }
         .futureTweet {
             background: #fff;
@@ -25,6 +30,19 @@
             cursor: pointer;
             margin: 20px auto 0;
         }
+        .username {
+            display: block;
+            margin: 0 auto;
+            padding: 5px;
+            font-size: 20px;
+            border-radius: 5px;
+            border: 1px solid #555;
+        }
+        .submit {
+            display: block;
+            margin: 10px auto 0;
+            padding: 5px 20px;
+        }
     </style>
 </head>
 <body>
@@ -33,8 +51,8 @@
 
         <div ng-hide="result">
             <h1>Enter your twitter username</h1>
-            <input type="text" ng-model="username" ng-keyup="pressenter($event)" />
-            <button ng-click="submit()">Go</button>
+            <input class="username" type="text" ng-model="username" ng-keyup="pressenter($event)" focus="true" />
+            <button class="submit" ng-click="submit()">Go</button>
         </div>
 
         <div ng-show="result">
@@ -47,6 +65,21 @@
     <script>
 
         angular.module('tttf', [])
+
+            .directive('focus', function($timeout, $parse) {
+                return {
+                    link: function(scope, element, attrs) {
+                        var model = $parse(attrs.focus);
+                        scope.$watch(model, function(value) {
+                            if(value === true) {
+                                $timeout(function() {
+                                    element[0].focus();
+                                });
+                            }
+                        });
+                    }
+                };
+            })
 
             .config(function($interpolateProvider){
                 $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
@@ -67,9 +100,6 @@
                     }).then(function successCallback(response) {
                         $scope.result = true;
                         var words = response.data;
-/*                        var words = words.reduce(function(src, item) {
-                            return {word: src['word'] + ' ' + item['word']};
-                        })['word'];*/
                         $scope.futureTweet = words;
                     }, function errorCallback(response) {
                         console.log('error');
